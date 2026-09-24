@@ -17,10 +17,13 @@ export const Footer: React.FC = () => {
             Features
           </a>
           <a href="#benefits" className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline">
-            Pricing
+            Creator Benefits
           </a>
           <a href="#how-it-works" className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline">
-            Testimonials
+            How It Works
+          </a>
+          <a href="#generator-form" className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline">
+            AI Content Planner
           </a>
         </div>
 

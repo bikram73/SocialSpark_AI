@@ -294,10 +294,6 @@ Contributions, issues, and feature requests are welcome!
 
 ---
 
-## 📄 License
-
-Distributed under the **Apache 2.0 License**. See `LICENSE` for more information.
-
 <div align="center">
   <sub>Built with ❤️ by <a href="https://github.com/bikram73">Bikram Manna</a> • SocialSpark AI</sub>
 </div>

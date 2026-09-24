@@ -80,7 +80,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDocs, onOpenGenerator, onN
               e.preventDefault();
               onOpenGenerator?.();
             }}
-            className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline cursor-pointer font-medium"
+            className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline cursor-pointer"
           >
             AI Content Planner
           </a>

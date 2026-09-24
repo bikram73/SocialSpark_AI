@@ -17,6 +17,7 @@ import { GeneratorForm } from './components/GeneratorForm';
 import { LoadingState } from './components/LoadingState';
 import { ResultSection } from './components/ResultSection';
 import { CalendarPreviewModal } from './components/CalendarPreviewModal';
+import { DocumentationModal } from './components/DocumentationModal';
 import { generateContentPlan } from './services/api';
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [isDemoOpen, setIsDemoOpen] = useState(false);
+  const [isDocsOpen, setIsDocsOpen] = useState(false);
   const [generatedData, setGeneratedData] = useState<GeneratedResult | null>(null);
 
   const [formState, setFormState] = useState<FormState>({
@@ -171,12 +173,18 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <Footer />
+      <Footer onOpenDocs={() => setIsDocsOpen(true)} />
 
       {/* 3D Calendar View Modal */}
       <CalendarPreviewModal
         isOpen={isDemoOpen}
         onClose={() => setIsDemoOpen(false)}
+      />
+
+      {/* Documentation Modal */}
+      <DocumentationModal
+        isOpen={isDocsOpen}
+        onClose={() => setIsDocsOpen(false)}
       />
     </div>
   );

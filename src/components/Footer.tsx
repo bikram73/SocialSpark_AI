@@ -1,6 +1,10 @@
 import React from 'react';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenDocs?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenDocs }) => {
   return (
     <footer className="w-full py-16 bg-white border-t border-[#ccc3d8]/20">
       <div className="max-w-[1280px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -29,15 +33,21 @@ export const Footer: React.FC = () => {
 
         <div className="flex flex-col gap-2">
           <h4 className="font-bold text-[#191c1e] mb-2 text-base">Resources</h4>
-          <a href="#" className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline">
+          <a
+            href="https://github.com/bikram73/SocialSpark_AI"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline flex items-center gap-1"
+          >
             GitHub
+            <span className="material-symbols-outlined text-xs">open_in_new</span>
           </a>
-          <a href="#" className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline">
+          <button
+            onClick={onOpenDocs}
+            className="text-left text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline cursor-pointer"
+          >
             Documentation
-          </a>
-          <a href="#" className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline">
-            API Status
-          </a>
+          </button>
         </div>
 
         <div className="flex flex-col gap-2">

@@ -163,17 +163,67 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
 }) => {
   const [validationError, setValidationError] = useState<string | null>(null);
   const [activePresetId, setActivePresetId] = useState<string>('fitlife');
+  const [lastClearedState, setLastClearedState] = useState<FormState | null>(null);
+  const [showClearedFeedback, setShowClearedFeedback] = useState(false);
+
+  const isFormEmpty =
+    !formState.brandName.trim() &&
+    !formState.businessCategory.trim() &&
+    !formState.targetAudience.trim() &&
+    !formState.contentThemes.trim() &&
+    !formState.primaryGoal.trim() &&
+    !formState.additionalInstructions.trim() &&
+    !Object.values(formState.platforms).some(Boolean);
+
+  const handleClearAll = () => {
+    setLastClearedState({ ...formState, platforms: { ...formState.platforms } });
+    setActivePresetId('');
+    setFormState({
+      brandName: '',
+      businessCategory: '',
+      targetAudience: '',
+      brandVoice: 'Friendly and Motivational',
+      contentThemes: '',
+      primaryGoal: '',
+      platforms: {
+        instagram: false,
+        linkedin: false,
+        twitter: false,
+        facebook: false,
+        pinterest: false,
+        youtube: false,
+      },
+      additionalInstructions: '',
+    });
+    setValidationError(null);
+    setShowClearedFeedback(true);
+  };
+
+  const handleUndoClear = () => {
+    if (lastClearedState) {
+      setFormState(lastClearedState);
+      setLastClearedState(null);
+      setShowClearedFeedback(false);
+    }
+  };
+
+  const handleClearField = (fieldName: keyof FormState) => {
+    setFormState((prev) => ({ ...prev, [fieldName]: '' }));
+    setValidationError(null);
+  };
 
   const handleSelectPreset = (preset: ExamplePreset) => {
     setActivePresetId(preset.id);
     setFormState(preset.data);
     setValidationError(null);
+    setShowClearedFeedback(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormState((prev) => ({ ...prev, [name]: value }));
     setValidationError(null);
+    setShowClearedFeedback(false);
   };
 
   const handleCheckboxChange = (platformKey: keyof FormState['platforms']) => {
@@ -185,6 +235,7 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
       },
     }));
     setValidationError(null);
+    setShowClearedFeedback(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -296,51 +347,137 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
           </div>
         )}
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-6" onSubmit={handleSubmit} id="strategy-generator-form">
+          {/* Header Toolbar with Clear Option */}
+          <div className="flex items-center justify-between pb-3 border-b border-[#e1e2ec]">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#630ed4] text-lg">tune</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#4a4455]">
+                Strategy Parameters
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={handleClearAll}
+              disabled={isFormEmpty}
+              title="Clear all inputs and reset form"
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all border ${
+                isFormEmpty
+                  ? 'opacity-40 cursor-not-allowed text-[#79747e] border-transparent bg-transparent'
+                  : 'text-[#ba1a1a] hover:bg-[#ffdad6]/50 active:bg-[#ffdad6]/80 border-[#ba1a1a]/30 cursor-pointer shadow-xs'
+              }`}
+            >
+              <span className="material-symbols-outlined text-base">delete_sweep</span>
+              Clear All
+            </button>
+          </div>
+
+          {/* Cleared Feedback Notification */}
+          {showClearedFeedback && (
+            <div className="p-3.5 rounded-xl bg-[#eaddff]/60 border border-[#630ed4]/30 text-[#191c1e] text-xs font-medium flex items-center justify-between transition-all">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[#630ed4] text-base">check_circle</span>
+                <span>All form inputs and platforms have been cleared.</span>
+              </div>
+              {lastClearedState && (
+                <button
+                  type="button"
+                  onClick={handleUndoClear}
+                  className="text-[#630ed4] hover:text-[#4f00ad] font-bold text-xs flex items-center gap-1 cursor-pointer hover:underline"
+                >
+                  <span className="material-symbols-outlined text-sm">undo</span>
+                  Undo Clear
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Row 1: Brand Name & Business Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4a4455] block">
-                Brand Name <span className="text-[#ba1a1a]">*</span>
-              </label>
-              <input
-                type="text"
-                name="brandName"
-                value={formState.brandName}
-                onChange={handleInputChange}
-                placeholder="e.g. FitLife or EcoSphere Tech"
-                className="w-full bg-white border border-[#ccc3d8] rounded-xl px-4 py-2.5 focus:border-[#630ed4] focus:ring-2 focus:ring-[#630ed4]/20 transition-all outline-none text-[#191c1e] text-sm"
-              />
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-semibold text-[#4a4455] block">
+                  Brand Name <span className="text-[#ba1a1a]">*</span>
+                </label>
+                {formState.brandName && (
+                  <button
+                    type="button"
+                    onClick={() => handleClearField('brandName')}
+                    className="text-[11px] text-[#79747e] hover:text-[#ba1a1a] cursor-pointer flex items-center gap-0.5"
+                    title="Clear brand name"
+                  >
+                    <span className="material-symbols-outlined text-xs">close</span> Clear
+                  </button>
+                )}
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="brandName"
+                  value={formState.brandName}
+                  onChange={handleInputChange}
+                  placeholder="e.g. FitLife or EcoSphere Tech"
+                  className="w-full bg-white border border-[#ccc3d8] rounded-xl px-4 py-2.5 focus:border-[#630ed4] focus:ring-2 focus:ring-[#630ed4]/20 transition-all outline-none text-[#191c1e] text-sm"
+                />
+              </div>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4a4455] block">
-                Business Category / Industry <span className="text-[#ba1a1a]">*</span>
-              </label>
-              <input
-                type="text"
-                name="businessCategory"
-                value={formState.businessCategory}
-                onChange={handleInputChange}
-                placeholder="e.g. Fitness or Sustainable Fashion"
-                className="w-full bg-white border border-[#ccc3d8] rounded-xl px-4 py-2.5 focus:border-[#630ed4] focus:ring-2 focus:ring-[#630ed4]/20 transition-all outline-none text-[#191c1e] text-sm"
-              />
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-semibold text-[#4a4455] block">
+                  Business Category / Industry <span className="text-[#ba1a1a]">*</span>
+                </label>
+                {formState.businessCategory && (
+                  <button
+                    type="button"
+                    onClick={() => handleClearField('businessCategory')}
+                    className="text-[11px] text-[#79747e] hover:text-[#ba1a1a] cursor-pointer flex items-center gap-0.5"
+                    title="Clear category"
+                  >
+                    <span className="material-symbols-outlined text-xs">close</span> Clear
+                  </button>
+                )}
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="businessCategory"
+                  value={formState.businessCategory}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Fitness or Sustainable Fashion"
+                  className="w-full bg-white border border-[#ccc3d8] rounded-xl px-4 py-2.5 focus:border-[#630ed4] focus:ring-2 focus:ring-[#630ed4]/20 transition-all outline-none text-[#191c1e] text-sm"
+                />
+              </div>
             </div>
           </div>
 
           {/* Row 2: Target Audience & Brand Voice */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4a4455] block">
-                Target Audience <span className="text-[#ba1a1a]">*</span>
-              </label>
-              <input
-                type="text"
-                name="targetAudience"
-                value={formState.targetAudience}
-                onChange={handleInputChange}
-                placeholder="e.g. College Students or Busy Professionals"
-                className="w-full bg-white border border-[#ccc3d8] rounded-xl px-4 py-2.5 focus:border-[#630ed4] focus:ring-2 focus:ring-[#630ed4]/20 transition-all outline-none text-[#191c1e] text-sm"
-              />
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-semibold text-[#4a4455] block">
+                  Target Audience <span className="text-[#ba1a1a]">*</span>
+                </label>
+                {formState.targetAudience && (
+                  <button
+                    type="button"
+                    onClick={() => handleClearField('targetAudience')}
+                    className="text-[11px] text-[#79747e] hover:text-[#ba1a1a] cursor-pointer flex items-center gap-0.5"
+                    title="Clear audience"
+                  >
+                    <span className="material-symbols-outlined text-xs">close</span> Clear
+                  </button>
+                )}
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="targetAudience"
+                  value={formState.targetAudience}
+                  onChange={handleInputChange}
+                  placeholder="e.g. College Students or Busy Professionals"
+                  className="w-full bg-white border border-[#ccc3d8] rounded-xl px-4 py-2.5 focus:border-[#630ed4] focus:ring-2 focus:ring-[#630ed4]/20 transition-all outline-none text-[#191c1e] text-sm"
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-[#4a4455] block">
@@ -364,38 +501,90 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
           {/* Row 3: Content Themes & Primary Goal */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4a4455] block">
-                Content Themes
-              </label>
-              <input
-                type="text"
-                name="contentThemes"
-                value={formState.contentThemes}
-                onChange={handleInputChange}
-                placeholder="e.g. Workout Tips, Healthy Food, Motivation"
-                className="w-full bg-white border border-[#ccc3d8] rounded-xl px-4 py-2.5 focus:border-[#630ed4] focus:ring-2 focus:ring-[#630ed4]/20 transition-all outline-none text-[#191c1e] text-sm"
-              />
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-semibold text-[#4a4455] block">
+                  Content Themes
+                </label>
+                {formState.contentThemes && (
+                  <button
+                    type="button"
+                    onClick={() => handleClearField('contentThemes')}
+                    className="text-[11px] text-[#79747e] hover:text-[#ba1a1a] cursor-pointer flex items-center gap-0.5"
+                    title="Clear content themes"
+                  >
+                    <span className="material-symbols-outlined text-xs">close</span> Clear
+                  </button>
+                )}
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="contentThemes"
+                  value={formState.contentThemes}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Workout Tips, Healthy Food, Motivation"
+                  className="w-full bg-white border border-[#ccc3d8] rounded-xl px-4 py-2.5 focus:border-[#630ed4] focus:ring-2 focus:ring-[#630ed4]/20 transition-all outline-none text-[#191c1e] text-sm"
+                />
+              </div>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4a4455] block">
-                Primary Goal
-              </label>
-              <input
-                type="text"
-                name="primaryGoal"
-                value={formState.primaryGoal}
-                onChange={handleInputChange}
-                placeholder="e.g. Increase Engagement and Followers"
-                className="w-full bg-white border border-[#ccc3d8] rounded-xl px-4 py-2.5 focus:border-[#630ed4] focus:ring-2 focus:ring-[#630ed4]/20 transition-all outline-none text-[#191c1e] text-sm"
-              />
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-semibold text-[#4a4455] block">
+                  Primary Goal
+                </label>
+                {formState.primaryGoal && (
+                  <button
+                    type="button"
+                    onClick={() => handleClearField('primaryGoal')}
+                    className="text-[11px] text-[#79747e] hover:text-[#ba1a1a] cursor-pointer flex items-center gap-0.5"
+                    title="Clear primary goal"
+                  >
+                    <span className="material-symbols-outlined text-xs">close</span> Clear
+                  </button>
+                )}
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="primaryGoal"
+                  value={formState.primaryGoal}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Increase Engagement and Followers"
+                  className="w-full bg-white border border-[#ccc3d8] rounded-xl px-4 py-2.5 focus:border-[#630ed4] focus:ring-2 focus:ring-[#630ed4]/20 transition-all outline-none text-[#191c1e] text-sm"
+                />
+              </div>
             </div>
           </div>
 
           {/* Row 4: Platforms */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#4a4455] block">
-              Platforms <span className="text-[#ba1a1a]">*</span>
-            </label>
+            <div className="flex justify-between items-center">
+              <label className="text-sm font-semibold text-[#4a4455] block">
+                Platforms <span className="text-[#ba1a1a]">*</span>
+              </label>
+              {Object.values(formState.platforms).some(Boolean) && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      platforms: {
+                        instagram: false,
+                        linkedin: false,
+                        twitter: false,
+                        facebook: false,
+                        pinterest: false,
+                        youtube: false,
+                      },
+                    }))
+                  }
+                  className="text-[11px] text-[#79747e] hover:text-[#ba1a1a] cursor-pointer flex items-center gap-0.5"
+                  title="Deselect all platforms"
+                >
+                  <span className="material-symbols-outlined text-xs">close</span> Deselect all
+                </button>
+              )}
+            </div>
             <div className="flex flex-wrap gap-3">
               <label className="flex items-center gap-2 bg-[#f2f4f6] px-4 py-2 rounded-full cursor-pointer hover:bg-[#eaddff] transition-colors text-sm font-medium">
                 <input
@@ -465,9 +654,21 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
               <label className="text-sm font-semibold text-[#4a4455] block">
                 Additional Instructions (Optional, max 500 chars)
               </label>
-              <span className={`text-xs ${formState.additionalInstructions.length >= 480 ? 'text-[#ba1a1a] font-bold' : 'text-[#4a4455]'}`}>
-                {formState.additionalInstructions.length} / 500
-              </span>
+              <div className="flex items-center gap-3">
+                {formState.additionalInstructions && (
+                  <button
+                    type="button"
+                    onClick={() => handleClearField('additionalInstructions')}
+                    className="text-[11px] text-[#79747e] hover:text-[#ba1a1a] cursor-pointer flex items-center gap-0.5"
+                    title="Clear instructions"
+                  >
+                    <span className="material-symbols-outlined text-xs">close</span> Clear
+                  </button>
+                )}
+                <span className={`text-xs ${formState.additionalInstructions.length >= 480 ? 'text-[#ba1a1a] font-bold' : 'text-[#4a4455]'}`}>
+                  {formState.additionalInstructions.length} / 500
+                </span>
+              </div>
             </div>
             <textarea
               name="additionalInstructions"
@@ -480,14 +681,32 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
             ></textarea>
           </div>
 
-          {/* Action button */}
-          <button
-            type="submit"
-            className="w-full primary-gradient primary-gradient-hover text-white flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-base transition-all shadow-[0_20px_60px_rgba(124,58,237,0.18)] active:scale-[0.99] cursor-pointer"
-          >
-            <span className="material-symbols-outlined fill-1">auto_awesome</span>
-            Generate Plan Now
-          </button>
+          {/* Action buttons */}
+          <div className="flex flex-col-reverse sm:flex-row items-center gap-3 pt-2">
+            <button
+              type="button"
+              onClick={handleClearAll}
+              disabled={isFormEmpty}
+              id="clear-form-btn-bottom"
+              title="Remove everything in this form"
+              className={`w-full sm:w-auto px-6 py-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 ${
+                isFormEmpty
+                  ? 'opacity-40 cursor-not-allowed text-[#79747e] bg-[#e1e2ec]/30 border border-[#ccc3d8]/40'
+                  : 'text-[#ba1a1a] hover:text-[#93000a] bg-white hover:bg-[#ffdad6]/40 border border-[#ba1a1a]/40 hover:border-[#ba1a1a] cursor-pointer shadow-sm active:scale-[0.99]'
+              }`}
+            >
+              <span className="material-symbols-outlined text-lg">delete_sweep</span>
+              Clear All Fields
+            </button>
+
+            <button
+              type="submit"
+              className="w-full sm:flex-1 primary-gradient primary-gradient-hover text-white flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-base transition-all shadow-[0_20px_60px_rgba(124,58,237,0.18)] active:scale-[0.99] cursor-pointer"
+            >
+              <span className="material-symbols-outlined fill-1">auto_awesome</span>
+              Generate Plan Now
+            </button>
+          </div>
         </form>
       </div>
     </section>

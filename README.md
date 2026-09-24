@@ -7,12 +7,17 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Google Gemini API](https://img.shields.io/badge/Google%20Gemini%20API-3.6%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
+[![Netlify Status](https://img.shields.io/badge/Live_Demo-social--spark--ai.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://social-spark-ai.netlify.app/)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-bikram73%2FSocialSpark__AI-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bikram73/SocialSpark_AI)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
 
 <p align="center">
   <strong>Transform your raw brand brief into an actionable 7-day multi-platform social media strategy in seconds.</strong><br>
   Complete with day-by-day posting schedules, platform-tailored captions, hashtags, engagement hooks, and multi-format exports.
+</p>
+
+<p align="center">
+  🚀 <strong>Live Production App:</strong> <a href="https://social-spark-ai.netlify.app/" target="_blank"><strong>https://social-spark-ai.netlify.app/</strong></a>
 </p>
 
 </div>
@@ -132,6 +137,8 @@ SocialSpark_AI/
 
 <a name="installation"></a>
 ## 🚀 Installation & Setup
+
+> 💡 **Try it Live Without Setup**: You can test the fully deployed application directly at [**https://social-spark-ai.netlify.app/**](https://social-spark-ai.netlify.app/).
 
 ### 📋 Prerequisites
 - **Node.js**: `v20.0.0` or higher

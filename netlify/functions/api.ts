@@ -31,6 +31,105 @@ interface SanitizedPost {
   engagementTip: string;
 }
 
+function sanitizeHashtags(
+  rawTags: any[],
+  brandName: string,
+  themeOrCategory: string,
+  targetCount: number = 7
+): string[] {
+  const cleanBrand = brandName.replace(/[^a-zA-Z0-9]/g, "");
+  const brandTag = cleanBrand.length >= 2 ? `#${cleanBrand}` : "#SocialSpark";
+
+  const genericBanned = new Set([
+    "#strategy",
+    "#growthmindset",
+    "#professionalgrowth",
+    "#industryinsights",
+    "#innovation",
+    "#thoughtleadership",
+    "#buildinginpublic",
+    "#scale",
+  ]);
+
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  const addTag = (tagStr: string) => {
+    let t = tagStr.trim();
+    if (!t) return;
+    if (!t.startsWith("#")) t = `#${t}`;
+    t = "#" + t.replace(/^#+/, "").replace(/[^a-zA-Z0-9_]/g, "");
+    if (t.length < 3) return;
+    const lower = t.toLowerCase();
+    if (!seen.has(lower)) {
+      seen.add(lower);
+      result.push(t);
+    }
+  };
+
+  addTag(brandTag);
+
+  if (Array.isArray(rawTags)) {
+    const isCategoryCorporate = /consulting|corporate|b2b|enterprise|venture/i.test(themeOrCategory);
+    for (const item of rawTags) {
+      if (typeof item === "string") {
+        const lower = item.trim().toLowerCase();
+        if (!genericBanned.has(lower) || isCategoryCorporate) {
+          addTag(item);
+        }
+      }
+    }
+  }
+
+  const words = themeOrCategory
+    .replace(/[^a-zA-Z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter(
+      (w) =>
+        w.length >= 3 &&
+        !["and", "for", "the", "with", "from", "tips", "our", "your"].includes(w.toLowerCase())
+    );
+
+  for (const w of words) {
+    if (result.length >= 9) break;
+    const cap = w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+    addTag(`#${cap}`);
+    addTag(`#${cap}Tips`);
+    addTag(`#Daily${cap}`);
+    addTag(`#${cap}Inspo`);
+  }
+
+  const cleanWords = words.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+  const mainWord = cleanWords[0] || "Lifestyle";
+  const extraTags = [
+    `#${mainWord}Guide`,
+    `#${mainWord}Love`,
+    `#${cleanBrand}Tips`,
+    `#${cleanBrand}Community`,
+    `#Easy${mainWord}`,
+    `#Quick${mainWord}`,
+    `#${mainWord}Ideas`,
+    `#${mainWord}Goals`,
+  ];
+
+  for (const extra of extraTags) {
+    if (result.length >= 8) break;
+    addTag(extra);
+  }
+
+  let finalTags = result;
+  if (finalTags.length > 10) {
+    finalTags = finalTags.slice(0, 10);
+  }
+  let fallbackCounter = 1;
+  while (finalTags.length < 6) {
+    addTag(`#${cleanBrand}Post${fallbackCounter++}`);
+    finalTags = result.slice(0, 10);
+  }
+
+  return finalTags;
+}
+
 function createFallbackPlan(params: {
   brandName: string;
   businessCategory: string;
@@ -51,93 +150,169 @@ function createFallbackPlan(params: {
     primaryGoal,
   } = params;
 
-  const activePlatforms = platforms.length > 0 ? platforms : ["Instagram", "LinkedIn", "X (Twitter)"];
+  const activePlatforms = platforms.length > 0 ? platforms : ["Instagram", "Facebook", "Pinterest"];
   const getPlat = (idx: number) => activePlatforms[idx % activePlatforms.length];
 
+  const rawThemes = contentThemes
+    ? contentThemes.split(/[,;\n]+/).map((t) => t.trim()).filter(Boolean)
+    : [];
+
+  const theme1 = rawThemes[0] || `${businessCategory} Essentials`;
+  const theme2 = rawThemes[1] || `Practical ${businessCategory} Habits`;
+  const theme3 = rawThemes[2] || `Quick Tips for ${targetAudience}`;
+  const theme4 = rawThemes[3] || `Sustainable ${businessCategory} Practices`;
+  const theme5 = rawThemes[4] || `Weekend ${businessCategory} Inspiration`;
+
+  const isFriendly = /friendly|approachable|casual|warm|playful|witty/i.test(brandVoice);
+
+  const intro1 = isFriendly
+    ? `Eating healthy and staying energized when you're busy doesn't have to mean spending hours cooking! 🥗 At ${brandName}, we're all about simple, realistic choices that fit your real life.`
+    : `Kickstart your week with intentional focus. At ${brandName}, we know consistency in ${theme1} creates measurable results for ${targetAudience}.`;
+
+  const intro2 = isFriendly
+    ? `The secret to a stress-free week? A little smart prep on your own terms. 🍱 Here is our easy routine for ${theme2} so you can save time without sacrificing quality.`
+    : `Streamline your approach to ${theme2}. Here are structured guidelines observed by our team at ${brandName} to maximize output and efficiency.`;
+
+  const intro3 = isFriendly
+    ? `Small daily swaps add up to massive wellness wins! ✨ Swipe through for 5 simple changes for ${theme3} you'll actually look forward to doing every single day.`
+    : `Explore 5 strategic adaptations for ${theme3}. Bookmark this breakdown to optimize your daily routine and support long-term goals.`;
+
+  const intro4 = isFriendly
+    ? `Good for your lifestyle, great for the planet! 🌿 Here are 4 realistic ways to practice ${theme4} without any extra stress.`
+    : `Examining the impact of ${theme4}. Here is how mindful practices create lasting sustainability for ${targetAudience}.`;
+
+  const intro5 = isFriendly
+    ? `Friday mood: keeping it quick, nourishing, and fun! 🥑 Here are 3 simple ideas for ${theme5} you can enjoy this weekend with zero hassle.`
+    : `End the week strong. Here is a curated guide for ${theme5} designed to support ${primaryGoal || "your lifestyle"}.`;
+
+  const intro6 = isFriendly
+    ? `Weekend project mode! 📌 Here is our complete step-by-step guide to ${theme1} tailored for ${targetAudience}. Save this pin or post to your weekend board!`
+    : `Detailed weekend breakdown: Master the fundamentals of ${theme1}. Designed for ${targetAudience} to implement with clarity.`;
+
+  const intro7 = isFriendly
+    ? `Sunday Reset time! 🌿 Taking just 15 minutes today to set your intentions makes all the difference. What was your favorite nourishing win this week? Drop it below!`
+    : `Weekly reflection and reset: Celebrate milestones achieved in ${businessCategory} and outline objectives for the upcoming week.`;
+
+  const getFormatAndIdea = (idx: number, plat: string, defaultFormat: string, defaultIdea: string) => {
+    if (plat.toLowerCase() === "pinterest") {
+      return {
+        format: "Visual Checklist / Recipe Pin",
+        idea: `5 Step-by-Step ${theme1} Ideas for ${targetAudience}`,
+      };
+    }
+    return { format: defaultFormat, idea: defaultIdea };
+  };
+
+  const day1Plat = getPlat(0);
+  const d1 = getFormatAndIdea(0, day1Plat, "Educational Reel / Video", `3 Quick & Easy ${theme1} for Busy Days`);
+
+  const day2Plat = getPlat(1);
+  const d2 = getFormatAndIdea(1, day2Plat, "Community Discussion Post", `Batch Planning 101: ${theme2} That Actually Works`);
+
+  const day3Plat = getPlat(2);
+  const d3 = getFormatAndIdea(2, day3Plat, "Multi-Slide Carousel Guide", `5 Simple Swaps for ${theme3}`);
+
+  const day4Plat = getPlat(3);
+  const d4 = getFormatAndIdea(3, day4Plat, "Practical Tips Guide", `Sustainable Daily Habits: ${theme4}`);
+
+  const day5Plat = getPlat(4);
+  const d5 = getFormatAndIdea(4, day5Plat, "Quick Actionable Ideas", `Quick & Nourishing: ${theme5} in 15 Minutes`);
+
+  const day6Plat = getPlat(5);
+  const d6 = getFormatAndIdea(5, day6Plat, "Visual Guide / Inspiration", `Weekend Spotlight: ${theme1} Master Guide`);
+
+  const day7Plat = getPlat(6);
+  const d7 = getFormatAndIdea(6, day7Plat, "Weekly Reflection & Q&A", `Sunday Reset: Plan Your ${theme2} for the Week Ahead`);
+
   return {
-    strategy: `This 7-day content strategy for ${brandName} is designed to achieve "${primaryGoal || "High Audience Engagement"}" by delivering authentic, ${brandVoice.toLowerCase()} content that resonates directly with ${targetAudience}.`,
-    pillars: ["Educational & How-To", "Inspirational & Mindset", "Product & Social Proof", "Community Discussion"],
+    strategy: `This 7-day content strategy for ${brandName} is built around your core themes (${theme1}, ${theme2}, and ${theme3}) to achieve "${primaryGoal || "High Audience Engagement"}" by delivering authentic, ${brandVoice.toLowerCase()} content specifically for ${targetAudience}.`,
+    pillars: [
+      theme1,
+      theme2,
+      theme3,
+      theme4 || "Community Engagement & Q&A",
+    ],
     tips: [
-      `Post during peak morning hours on ${activePlatforms[0]} for maximum early algorithmic velocity.`,
-      "Engage with comments and direct messages within 30 minutes of publishing to boost post distribution.",
-      "Use high-contrast visuals and multi-slide carousels to maximize audience dwell time.",
+      `Post video reels and visual guides during peak morning hours on ${activePlatforms[0]} for maximum organic reach.`,
+      "Reply to all comments within 30 minutes of publishing to boost algorithmic distribution and build community trust.",
+      `Create searchable, save-worthy guides on ${activePlatforms.includes("Pinterest") ? "Pinterest" : activePlatforms[0]} to drive long-term evergreen traffic.`,
     ],
     calendar: [
       {
         day: "Monday",
-        platform: getPlat(0),
-        contentType: "Educational Reel / Video",
-        idea: `3 Game-Changing Insights in ${businessCategory}`,
+        platform: day1Plat,
+        contentType: d1.format,
+        idea: d1.idea,
         time: "09:00 AM",
         cta: "Save This Guide",
-        caption: `🚀 Kickstart your week! At ${brandName}, we know that small consistent actions lead to remarkable breakthroughs. Dive into these essential strategies tailored for ${targetAudience}.\n\nWhat is your #1 priority this week? Drop it below!`,
-        hashtags: [`#${brandName.replace(/\s+/g, '')}`, "#MondayMotivation", "#IndustryInsights", "#GrowthMindset", "#TipsAndTricks"],
-        engagementTip: "Ask a targeted question at the end to trigger comments in the crucial first hour.",
+        caption: `${intro1}\n\nWhat is your go-to goal for the week ahead? Drop it in the comments below!`,
+        hashtags: sanitizeHashtags([], brandName, `${theme1} ${businessCategory}`, 7),
+        engagementTip: "Ask a relatable question at the end to trigger comments in the crucial first hour.",
       },
       {
         day: "Tuesday",
-        platform: getPlat(1),
-        contentType: "Thought Leadership Post",
-        idea: `The Evolution of ${businessCategory}: What We Learned`,
+        platform: day2Plat,
+        contentType: d2.format,
+        idea: d2.idea,
         time: "11:30 AM",
-        cta: "Share Your Perspective",
-        caption: `How is innovation reshaping our sector? Here are key takeaways observed by our team at ${brandName}.\n\nAdapting early isn't just an advantage—it's essential for sustainable growth. How are you approaching this transition?`,
-        hashtags: ["#ThoughtLeadership", "#ProfessionalGrowth", "#Innovation", "#IndustryTrends", "#Strategy"],
-        engagementTip: "Tag 2 industry leaders or peers to invite their perspective into the conversation.",
+        cta: "Share Your Routine",
+        caption: `${intro2}\n\nTell us: what is the one routine you always stick to when your schedule gets crazy?`,
+        hashtags: sanitizeHashtags([], brandName, `${theme2} ${businessCategory}`, 7),
+        engagementTip: "Tag 2 community members or invite followers to share their favorite routine in the replies.",
       },
       {
         day: "Wednesday",
-        platform: getPlat(2),
-        contentType: "Multi-Slide Carousel Guide",
-        idea: `Step-by-Step Breakdown: ${contentThemes ? contentThemes.split(',')[0].trim() : 'Mastering the Basics'}`,
+        platform: day3Plat,
+        contentType: d3.format,
+        idea: d3.idea,
         time: "02:00 PM",
-        cta: "Swipe & Save",
-        caption: `Swipe through for a step-by-step masterclass! 📊 We broke down everything ${targetAudience} needs to know to take the next step with confidence.\n\nBookmark this post so you can reference it whenever you need it!`,
-        hashtags: ["#CarouselPost", "#StepByStep", "#EducationalContent", "#ValueFirst", "#ActionableAdvice"],
+        cta: "Swipe & Bookmark",
+        caption: `${intro3}\n\nBookmark this post so you have it ready whenever you need a quick refresh!`,
+        hashtags: sanitizeHashtags([], brandName, `${theme3} ${businessCategory}`, 8),
         engagementTip: "Add a clear visual pointer on the final slide reminding viewers to hit the save button.",
       },
       {
         day: "Thursday",
-        platform: getPlat(3),
-        contentType: "Case Study / Transformation",
-        idea: `Real Results: Transforming Challenges into Wins`,
+        platform: day4Plat,
+        contentType: d4.format,
+        idea: d4.idea,
         time: "10:15 AM",
-        cta: "Read Full Story",
-        caption: `Proof is in the results. 💡 Discover how focusing on quality and community helped overcome obstacles and reach new milestones at ${brandName}.\n\nConsistency beats intensity every single time.`,
-        hashtags: ["#TransformationThursday", "#ClientSuccess", "#RealResults", "#CaseStudy", "#ProofOfWork"],
-        engagementTip: "Include 2-3 specific quantifiable bullet points in the first 3 lines.",
+        cta: "Try This Today",
+        caption: `${intro4}\n\nWhich of these simple habits do you already practice at home? Let's discuss below!`,
+        hashtags: sanitizeHashtags([], brandName, `${theme4} ${businessCategory}`, 7),
+        engagementTip: "Include 2-3 specific practical bullet points right near the top of the post.",
       },
       {
         day: "Friday",
-        platform: getPlat(4),
-        contentType: "Interactive Discussion Thread",
-        idea: `5 Common Myths in ${businessCategory} Debunked`,
+        platform: day5Plat,
+        contentType: d5.format,
+        idea: d5.idea,
         time: "03:45 PM",
-        cta: "Join the Debate",
-        caption: `Let's bust some widespread myths in ${businessCategory}! 🧵\n\n1. Myth: You need endless time.\n2. Fact: Focused execution creates 10x the output.\n\nWhich myth did you believe the longest?`,
-        hashtags: ["#MythBusting", "#FridayFacts", "#CommunityTalk", "#IndustryTruths", "#LearnTogether"],
-        engagementTip: "Reply to every single incoming comment with an open-ended follow-up question.",
+        cta: "Save for the Weekend",
+        caption: `${intro5}\n\nTap save so you have this ready for your weekend plans!`,
+        hashtags: sanitizeHashtags([], brandName, `${theme5} ${businessCategory}`, 7),
+        engagementTip: "Reply to every incoming comment with a friendly follow-up question.",
       },
       {
         day: "Saturday",
-        platform: getPlat(5),
-        contentType: "Behind-the-Scenes Spotlight",
-        idea: `Behind the Curtain: How the Team at ${brandName} Builds`,
+        platform: day6Plat,
+        contentType: d6.format,
+        idea: d6.idea,
         time: "01:00 PM",
-        cta: "Double-Tap to Support",
-        caption: `Weekend spotlight! 🌟 Here is an honest, candid look behind the scenes at how we bring our ideas to life for ${targetAudience}.\n\nPassionate work done with great people. Have an incredible weekend!`,
-        hashtags: ["#BehindTheScenes", "#CompanyCulture", "#CreatorLife", "#WeekendVibes", "#BuildingInPublic"],
-        engagementTip: "Use conversational storytelling and reshare responses to your Stories.",
+        cta: "Pin & Share",
+        caption: `${intro6}\n\nHave a wonderful, restful weekend from all of us at ${brandName}!`,
+        hashtags: sanitizeHashtags([], brandName, `${theme1} ${targetAudience}`, 8),
+        engagementTip: "Encourage followers to bookmark this pin/post to their personal planning boards.",
       },
       {
         day: "Sunday",
-        platform: getPlat(6),
-        contentType: "Weekly Reflection & Community Q&A",
-        idea: "Sunday Reset: Celebrate Wins and Set Intentions",
+        platform: day7Plat,
+        contentType: d7.format,
+        idea: d7.idea,
         time: "05:00 PM",
         cta: "Drop Your Win",
-        caption: `Sunday Reset time! 🌿 Take a minute to celebrate your biggest win from this past week, no matter how small.\n\nWhat are you most excited to accomplish in the week ahead? Let's champion each other!`,
-        hashtags: ["#SundayReset", "#WeeklyReflection", "#WinsOfTheWeek", "#CommunityLove", "#MindsetMatters"],
+        caption: `${intro7}\n\nShare your biggest win below—let's cheer each other on heading into the new week!`,
+        hashtags: sanitizeHashtags([], brandName, `SundayReset ${theme2}`, 7),
         engagementTip: "Pin the most inspiring community comment to the top of the thread.",
       },
     ],
@@ -216,15 +391,38 @@ Based on the following brand brief:
 - Business Category / Industry: ${cleanCategory}
 - Target Audience: ${cleanAudience}
 - Brand Voice: ${cleanVoice}
-- Content Themes: ${contentThemes || "General Growth & Value"}
+- Content Themes: ${contentThemes || `${cleanCategory} Essentials and Tips`}
 - Selected Platforms: ${selectedPlatforms}
-- Primary Marketing Goal: ${primaryGoal || "Engagement"}
+- Primary Marketing Goal: ${primaryGoal || "Engagement and Community"}
 - Additional Instructions: ${additionalInstructions || "None"}
 
-Please generate a complete 7-day social media strategy and content posting calendar.
+CRITICAL CONTENT RELEVANCE RULES:
+- Every post MUST directly relate to at least one user-provided Content Theme: "${contentThemes || cleanCategory}".
+- DO NOT generate generic business, marketing, leadership, scaling, or corporate topics (such as "game-changing insights", "industry evolution", "sustainable growth", "innovation is reshaping our sector", "adapting early is essential for growth", or "how our team builds") unless they are explicitly included in Content Themes.
+- If this brand is about food, healthy recipes, or meal prep: every post MUST discuss real food, recipes, meal prep boxes, grocery budgeting, ingredients, snacks, kitchen hacks, or sustainable eating.
+- At least 5 of the 7 posts MUST directly feature the provided Content Themes.
+
+BRAND VOICE & AUDIENCE RULES:
+- Strictly maintain the selected Brand Voice ("${cleanVoice}") throughout every caption.
+- If Friendly & Approachable: write warm, conversational, human, and encouraging captions (e.g., "Eating healthy when you're busy doesn't have to mean spending hours in the kitchen..."). Speak directly to ${cleanAudience}.
+
+HASHTAG RULES (CRITICAL):
+- Generate strictly between 6 and 10 niche hashtags for EVERY post (NEVER 5 or fewer, and NEVER more than 10).
+- At least 4 hashtags must be directly relevant to the selected Content Theme.
+- Include the brand hashtag #${cleanBrandName.replace(/[^a-zA-Z0-9]/g, "")}.
+- Avoid generic hashtags like #Strategy, #ProfessionalGrowth, #IndustryInsights, #GrowthMindset unless relevant to corporate business/consulting.
+
+PLATFORM RELEVANCE:
+- Instagram: visual, reels, carousels, engaging save-worthy tips.
+- Facebook: conversational and community-focused discussion prompts.
+- Pinterest: searchable, visual, tutorial/checklist/recipe-oriented (e.g., "5 Easy Meal-Prep Boxes for Busy Students").
+- LinkedIn: professional and insight-oriented tailored specifically to this niche.
+- X (Twitter): concise, discussion-driven, or actionable thread.
+- YouTube: video-focused, tutorials, Shorts hooks.
+
 Requirements:
 1. Provide an overarching 2-3 sentence weekly strategy summary tailored to this brand and audience.
-2. List exactly 4 core content pillars.
+2. List exactly 4 core content pillars matching the content themes.
 3. Provide 3 actionable weekly marketing/growth tips specifically for these platforms.
 4. Provide exactly 7 daily posts in chronological order from Monday through Sunday.
    The days MUST strictly be: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.
@@ -232,8 +430,8 @@ Requirements:
    For each day include:
    - day: strictly "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", or "Sunday"
    - platform: one of (${selectedPlatforms})
-   - contentType: descriptive format (e.g. Educational Reel, Carousel Guide, Case Study, Thread, Thought Leadership)
-   - idea: catchy, engaging post concept
+   - contentType: descriptive format (e.g. Educational Reel, Carousel Guide, Recipe Card, Discussion Thread)
+   - idea: catchy, engaging post concept directly tied to the brand's themes
    - time: optimal posting time (e.g. "09:00 AM", "01:30 PM", "07:00 PM")
    - cta: strong call to action
    - caption: complete, engaging 2-4 sentence caption with emojis and proper line breaks matching the "${cleanVoice}" voice
@@ -247,7 +445,7 @@ Requirements:
       contents: prompt,
       config: {
         systemInstruction:
-          "You are SocialSpark AI, a world-class social media manager and growth strategist. Always output structured, non-repetitive, high-converting social media content tailored precisely to the user's brand voice and goal. You must generate exactly 7 distinct days (Monday through Sunday).",
+          "You are SocialSpark AI, a world-class social media manager and growth strategist. Always output structured, non-repetitive, high-converting social media content tailored precisely to the user's specific brand, content themes, and voice. NEVER output generic corporate filler for lifestyle, food, or consumer brands. You must generate exactly 7 distinct days (Monday through Sunday) with 6 to 10 niche hashtags per post.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -334,6 +532,21 @@ Requirements:
 
       const fallbackItem = fallbackData.calendar[idx];
 
+      const postIdea = typeof match?.idea === "string" && match.idea.trim()
+        ? match.idea.trim()
+        : fallbackItem.idea;
+
+      const rawTags = Array.isArray(match?.hashtags) && match.hashtags.length > 0
+        ? match.hashtags
+        : fallbackItem.hashtags;
+
+      const validatedHashtags = sanitizeHashtags(
+        rawTags,
+        cleanBrandName,
+        `${postIdea} ${cleanCategory} ${contentThemes}`,
+        7
+      );
+
       sanitizedCalendar.push({
         day: dayName,
         platform: typeof match?.platform === "string" && match.platform.trim()
@@ -342,9 +555,7 @@ Requirements:
         contentType: typeof match?.contentType === "string" && match.contentType.trim()
           ? match.contentType.trim()
           : fallbackItem.contentType,
-        idea: typeof match?.idea === "string" && match.idea.trim()
-          ? match.idea.trim()
-          : fallbackItem.idea,
+        idea: postIdea,
         time: typeof match?.time === "string" && match.time.trim()
           ? match.time.trim()
           : fallbackItem.time,
@@ -354,12 +565,7 @@ Requirements:
         caption: typeof match?.caption === "string" && match.caption.trim()
           ? match.caption.trim()
           : fallbackItem.caption,
-        hashtags: Array.isArray(match?.hashtags) && match.hashtags.length > 0
-          ? match.hashtags.map((tag: any) => {
-              const str = String(tag).trim();
-              return str.startsWith("#") ? str : `#${str}`;
-            })
-          : fallbackItem.hashtags,
+        hashtags: validatedHashtags,
         engagementTip: typeof match?.engagementTip === "string" && match.engagementTip.trim()
           ? match.engagementTip.trim()
           : fallbackItem.engagementTip,
@@ -381,15 +587,25 @@ Requirements:
 };
 
 const handleRefreshPost = async (req: express.Request, res: express.Response) => {
-  const { day, platform, contentType, idea, brandName, brandVoice } = req.body || {};
+  const { day, platform, contentType, idea, brandName, brandVoice, businessCategory } = req.body || {};
 
   if (!day || !platform || !brandName) {
     return res.status(400).json({ error: "Missing required parameters (day, platform, brandName)." });
   }
 
+  const cleanBrand = String(brandName).trim();
+  const cleanIdea = String(idea || "Our Latest Focus").trim();
+  const cleanCategory = String(businessCategory || "").trim();
+  const cleanVoice = String(brandVoice || "Friendly and Approachable").trim();
+
+  const isFriendly = /friendly|approachable|casual|warm|playful|witty/i.test(cleanVoice);
+  const fallbackCaption = isFriendly
+    ? `✨ [Fresh Update] Quick peek into ${cleanIdea}! At ${cleanBrand}, we're always looking for simple, realistic ways to make life easier and more enjoyable. What do you think of this approach? Let's chat in the comments! 👇`
+    : `✨ [Fresh Update] Exploring essential strategies in ${cleanIdea}. At ${cleanBrand}, our mission is delivering actionable value and measurable results. How are you implementing this in your daily routine?`;
+
   const fallbackRefresh = {
-    caption: `✨ [Fresh Update] Exploring new horizons with ${idea || "our latest focus"}! At ${brandName}, we stay committed to delivering authentic value and inspiring results. What resonated most with you?`,
-    hashtags: [`#${String(brandName).replace(/\s+/g, '')}`, "#FreshIdeas", "#Strategy", "#CommunityFirst", "#Innovation"],
+    caption: fallbackCaption,
+    hashtags: sanitizeHashtags([], cleanBrand, `${cleanIdea} ${cleanCategory}`, 7),
   };
 
   const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
@@ -398,9 +614,14 @@ const handleRefreshPost = async (req: express.Request, res: express.Response) =>
   }
 
   try {
-    const prompt = `Write a fresh, highly engaging alternative caption and 6-8 relevant hashtags for a ${platform} post (${contentType || "Social Post"}) for brand "${brandName}" on topic "${idea || "Community Value"}".
-Tone: ${brandVoice || "Engaging and Authentic"}.
-Output format JSON: {"caption": "...", "hashtags": ["#tag1", "#tag2"]}`;
+    const prompt = `Write a fresh, highly engaging alternative caption and strictly 6 to 10 niche hashtags for a ${platform} post (${contentType || "Social Post"}) for brand "${cleanBrand}" on topic "${cleanIdea}".
+Tone: ${cleanVoice}.
+Rules:
+- MUST generate between 6 and 10 niche hashtags (strictly >= 6 and <= 10).
+- Include #${cleanBrand.replace(/[^a-zA-Z0-9]/g, "")}.
+- Avoid generic corporate buzzwords like #Strategy or #GrowthMindset unless specifically a business consultancy.
+- Maintain the "${cleanVoice}" tone throughout the caption.
+Output format JSON: {"caption": "...", "hashtags": ["#tag1", "#tag2", ...]}`;
 
     const ai = getGeminiClient();
     const response = await ai.models.generateContent({
@@ -430,12 +651,12 @@ Output format JSON: {"caption": "...", "hashtags": ["#tag1", "#tag2"]}`;
     const caption = typeof parsed.caption === "string" && parsed.caption.trim()
       ? parsed.caption.trim()
       : fallbackRefresh.caption;
-    const hashtags = Array.isArray(parsed.hashtags) && parsed.hashtags.length > 0
-      ? parsed.hashtags.map((h: any) => {
-          const tag = String(h).trim();
-          return tag.startsWith("#") ? tag : `#${tag}`;
-        })
+
+    const rawTags = Array.isArray(parsed.hashtags) && parsed.hashtags.length > 0
+      ? parsed.hashtags
       : fallbackRefresh.hashtags;
+
+    const hashtags = sanitizeHashtags(rawTags, cleanBrand, `${cleanIdea} ${cleanCategory}`, 7);
 
     res.json({ caption, hashtags });
   } catch (err) {

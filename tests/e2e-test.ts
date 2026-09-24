@@ -228,6 +228,70 @@ async function runTests() {
     });
   }
 
+  // 5. GreenBite Specific Quality, Voice & 6-10 Hashtag Verification Test
+  try {
+    const greenBitePayload = {
+      brandName: 'GreenBite',
+      businessCategory: 'Healthy Food & Sustainable Lifestyle',
+      targetAudience: 'Health-conscious millennials, busy students, and home cooks',
+      brandVoice: 'Friendly & Approachable',
+      contentThemes: 'Healthy Recipes, Meal Prep, Sustainability, Nutrition Tips, Quick Snacks',
+      platforms: ['Instagram', 'Facebook', 'Pinterest'],
+      primaryGoal: 'Increase Community Engagement & Recipe Saves',
+      additionalInstructions: 'Focus on 20-minute meal prep boxes and budget-friendly grocery swaps.',
+    };
+
+    const res = await makeRequest({ ...baseOptions, path: '/api/generate', method: 'POST' }, greenBitePayload);
+    const body = res.body;
+
+    const has7Days = Array.isArray(body.calendar) && body.calendar.length === 7;
+    // Rule: Every single post must have strictly between 6 and 10 hashtags
+    const allHashtags6to10 = has7Days && body.calendar.every(
+      (c: any) => Array.isArray(c.hashtags) && c.hashtags.length >= 6 && c.hashtags.length <= 10
+    );
+
+    // Rule: Brand hashtag present
+    const hasBrandTag = has7Days && body.calendar.every(
+      (c: any) => c.hashtags.some((tag: string) => tag.toLowerCase().includes('greenbite'))
+    );
+
+    // Rule: Content relevance to healthy food and recipes, not generic corporate
+    const bannedCorporateTerms = [
+      "game-changing insights in healthy food",
+      "the evolution of healthy food & sustainable lifestyle: what we learned",
+      "adapting early isn't just an advantage",
+      "how the team at greenbite builds",
+      "how is innovation reshaping our sector",
+    ];
+
+    const hasNoCorporateJargon = has7Days && body.calendar.every((c: any) => {
+      const combined = `${c.idea} ${c.caption}`.toLowerCase();
+      return !bannedCorporateTerms.some((term) => combined.includes(term));
+    });
+
+    const passed = res.status === 200 && allHashtags6to10 && hasBrandTag && hasNoCorporateJargon;
+
+    results.push({
+      suite: 'GreenBite Hardening Quality',
+      name: 'Generates 6–10 niche hashtags per post and excludes generic corporate phrases',
+      passed,
+      details: {
+        allHashtags6to10,
+        hasBrandTag,
+        hasNoCorporateJargon,
+        firstDayHashtags: body.calendar?.[0]?.hashtags,
+        firstDayIdea: body.calendar?.[0]?.idea,
+      },
+    });
+  } catch (err: any) {
+    results.push({
+      suite: 'GreenBite Hardening Quality',
+      name: 'Generates 6–10 niche hashtags per post and excludes generic corporate phrases',
+      passed: false,
+      error: err.message,
+    });
+  }
+
   // 5. Example Presets Integrity Verification (Section 27)
   const presets = [
     { name: 'FitLife', category: 'Fitness', voice: 'Friendly and Motivational' },

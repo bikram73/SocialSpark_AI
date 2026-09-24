@@ -220,6 +220,7 @@ export const ResultSection: React.FC<ResultSectionProps> = ({
         idea: item.idea,
         brandName: brandName,
         brandVoice: formState.brandVoice,
+        businessCategory: formState.businessCategory,
       });
 
       const updated = [...schedule];

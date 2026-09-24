@@ -53,7 +53,7 @@ export const Footer: React.FC = () => {
 
       <div className="max-w-[1280px] mx-auto px-6 mt-12 pt-6 border-t border-[#ccc3d8]/20 text-center">
         <p className="text-[#4a4455] text-xs font-medium">
-          © 2024 SocialSpark AI. All rights reserved.
+          © 2026 SocialSpark AI. All rights reserved.
         </p>
       </div>
     </footer>

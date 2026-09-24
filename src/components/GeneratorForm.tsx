@@ -7,12 +7,168 @@ interface GeneratorFormProps {
   onSubmit: () => void;
 }
 
+interface ExamplePreset {
+  id: string;
+  name: string;
+  icon: string;
+  tag: string;
+  data: FormState;
+}
+
+const EXAMPLE_PRESETS: ExamplePreset[] = [
+  {
+    id: 'fitlife',
+    name: 'FitLife',
+    icon: 'fitness_center',
+    tag: 'Fitness & Health',
+    data: {
+      brandName: 'FitLife',
+      businessCategory: 'Fitness & Wellness',
+      targetAudience: 'College Students & Young Professionals',
+      brandVoice: 'Friendly and Motivational',
+      contentThemes: 'Quick 15-Min Workouts, Healthy Meal Prep, Mindset Motivation',
+      primaryGoal: 'Increase Community Engagement and Followers',
+      platforms: {
+        instagram: true,
+        linkedin: true,
+        twitter: true,
+        facebook: false,
+        pinterest: false,
+        youtube: true,
+      },
+      additionalInstructions: 'Focus on relatable beginner fitness tips and simple meal-prep hacks.',
+    },
+  },
+  {
+    id: 'ecosphere',
+    name: 'EcoSphere Tech',
+    icon: 'eco',
+    tag: 'Clean Tech & SaaS',
+    data: {
+      brandName: 'EcoSphere Tech',
+      businessCategory: 'Sustainable Consumer Electronics',
+      targetAudience: 'Eco-Conscious Tech Enthusiasts & Early Adopters',
+      brandVoice: 'Inspirational & Bold',
+      contentThemes: 'Solar Innovations, Zero-Waste Living, Circular Tech Economy',
+      primaryGoal: 'Drive Product Pre-Orders & Thought Leadership',
+      platforms: {
+        instagram: true,
+        linkedin: true,
+        twitter: true,
+        facebook: false,
+        pinterest: true,
+        youtube: false,
+      },
+      additionalInstructions: 'Highlight recyclable ocean plastics and carbon offset statistics.',
+    },
+  },
+  {
+    id: 'beanbrew',
+    name: 'Bean & Brew',
+    icon: 'local_cafe',
+    tag: 'Café & Food',
+    data: {
+      brandName: 'Bean & Brew',
+      businessCategory: 'Artisanal Coffee & Bakery',
+      targetAudience: 'Coffee Lovers, Remote Workers & Local Foodies',
+      brandVoice: 'Friendly & Approachable',
+      contentThemes: 'Latte Art Tutorials, Morning Rituals, Single-Origin Beans, Pastry Pairings',
+      primaryGoal: 'Drive In-Store Foot Traffic & Weekend Visits',
+      platforms: {
+        instagram: true,
+        facebook: true,
+        pinterest: true,
+        twitter: false,
+        linkedin: false,
+        youtube: false,
+      },
+      additionalInstructions: 'Emphasize cozy neighborhood morning vibes and seasonal drinks.',
+    },
+  },
+  {
+    id: 'luxeglow',
+    name: 'LuxeGlow Skincare',
+    icon: 'spa',
+    tag: 'Beauty & Skincare',
+    data: {
+      brandName: 'LuxeGlow Skincare',
+      businessCategory: 'Clean Dermatological Skincare',
+      targetAudience: 'Gen Z & Millennials Seeking Glowing, Glass Skin',
+      brandVoice: 'Friendly & Approachable',
+      contentThemes: 'Ingredient Deep-Dives, Nighttime Routines, Skincare Myths, Before & Afters',
+      primaryGoal: 'Boost E-Commerce Sales & UGC Reviews',
+      platforms: {
+        instagram: true,
+        pinterest: true,
+        youtube: true,
+        facebook: false,
+        twitter: false,
+        linkedin: false,
+      },
+      additionalInstructions: 'Highlight hyaluronic acid benefits, vegan cruelty-free formulas.',
+    },
+  },
+  {
+    id: 'codecraft',
+    name: 'CodeCraft Academy',
+    icon: 'terminal',
+    tag: 'EdTech & Bootcamps',
+    data: {
+      brandName: 'CodeCraft Academy',
+      businessCategory: 'Online Coding Bootcamp & Upskilling',
+      targetAudience: 'Aspiring Web Developers & Tech Career Switchers',
+      brandVoice: 'Professional & Authoritative',
+      contentThemes: 'Full-Stack Tips, AI Coding Workflows, Portfolio Reviews, Tech Career Roadmaps',
+      primaryGoal: 'Acquire New Student Enrollments & Course Signups',
+      platforms: {
+        linkedin: true,
+        twitter: true,
+        youtube: true,
+        instagram: false,
+        facebook: false,
+        pinterest: false,
+      },
+      additionalInstructions: 'Feature real student transformations and actionable 60-second code tips.',
+    },
+  },
+  {
+    id: 'urbannest',
+    name: 'UrbanNest Realty',
+    icon: 'home_pin',
+    tag: 'Real Estate & Design',
+    data: {
+      brandName: 'UrbanNest Realty',
+      businessCategory: 'Boutique Real Estate & Interior Architecture',
+      targetAudience: 'First-Time Homebuyers & Modern Property Investors',
+      brandVoice: 'Professional & Authoritative',
+      contentThemes: 'Virtual Home Tours, Interior Staging Hacks, Market Trends, Mortgage Advice',
+      primaryGoal: 'Generate Inbound Buyer & Seller Lead Inquiries',
+      platforms: {
+        instagram: true,
+        linkedin: true,
+        facebook: true,
+        pinterest: true,
+        twitter: false,
+        youtube: false,
+      },
+      additionalInstructions: 'Focus on modern minimalist aesthetic and downtown neighborhood highlights.',
+    },
+  },
+];
+
 export const GeneratorForm: React.FC<GeneratorFormProps> = ({
   formState,
   setFormState,
   onSubmit,
 }) => {
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [activePresetId, setActivePresetId] = useState<string>('fitlife');
+
+  const handleSelectPreset = (preset: ExamplePreset) => {
+    setActivePresetId(preset.id);
+    setFormState(preset.data);
+    setValidationError(null);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -66,6 +222,57 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
           <span className="material-symbols-outlined text-7xl fill-1 text-[#630ed4]">
             auto_awesome
           </span>
+        </div>
+
+        {/* Quick Example Presets Selector */}
+        <div className="mb-8 p-5 bg-[#f7f9fb] rounded-2xl border border-[#ccc3d8]/40">
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#630ed4] text-lg">touch_app</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#191c1e]">
+                Try Sample Brand Examples:
+              </span>
+            </div>
+            <span className="text-[11px] text-[#4a4455] hidden sm:inline">
+              Click any example to autofill the form
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            {EXAMPLE_PRESETS.map((preset) => {
+              const isSelected = formState.brandName.toLowerCase() === preset.data.brandName.toLowerCase();
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => handleSelectPreset(preset)}
+                  className={`p-2.5 rounded-xl text-left transition-all border flex flex-col justify-between cursor-pointer ${
+                    isSelected
+                      ? 'bg-[#630ed4] text-white border-[#630ed4] shadow-md shadow-[#630ed4]/20 scale-[1.02]'
+                      : 'bg-white hover:bg-[#eaddff]/40 text-[#191c1e] border-[#ccc3d8]/50'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span
+                      className={`material-symbols-outlined text-base ${
+                        isSelected ? 'text-white' : 'text-[#630ed4]'
+                      }`}
+                    >
+                      {preset.icon}
+                    </span>
+                    <span className="font-bold text-xs truncate">{preset.name}</span>
+                  </div>
+                  <span
+                    className={`text-[10px] truncate ${
+                      isSelected ? 'text-white/80' : 'text-[#4a4455]'
+                    }`}
+                  >
+                    {preset.tag}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {validationError && (

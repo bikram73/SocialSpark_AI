@@ -39,9 +39,25 @@ export const Navigation: React.FC<NavigationProps> = ({
             setActiveTab('landing');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          className="font-extrabold text-[22px] text-[#630ed4] tracking-tight hover:opacity-90 transition-opacity text-left cursor-pointer"
+          className="flex items-center gap-2.5 group cursor-pointer text-left transition-transform active:scale-95"
         >
-          SocialSpark AI
+          {/* Logo Mark */}
+          <div className="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-[#630ed4] via-[#8127cf] to-[#d946ef] p-0.5 shadow-md shadow-[#630ed4]/20 group-hover:shadow-lg group-hover:shadow-[#630ed4]/35 transition-all duration-300">
+            <div className="w-full h-full bg-[#1b0042]/90 backdrop-blur-md rounded-[10px] flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#630ed4]/60 to-[#ec4899]/40 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+              <span className="material-symbols-outlined text-white text-[20px] fill-1 relative z-10 group-hover:rotate-12 transition-transform duration-300">
+                bolt
+              </span>
+            </div>
+          </div>
+          {/* Brand Wordmark */}
+          <div className="flex items-baseline tracking-tight">
+            <span className="font-extrabold text-[21px] text-[#191c1e]">Social</span>
+            <span className="font-extrabold text-[21px] bg-gradient-to-r from-[#630ed4] to-[#c026d3] bg-clip-text text-transparent">Spark</span>
+            <span className="ml-1.5 px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider bg-[#630ed4]/10 text-[#630ed4] rounded-md border border-[#630ed4]/20">
+              AI
+            </span>
+          </div>
         </button>
 
         {/* Desktop Nav */}

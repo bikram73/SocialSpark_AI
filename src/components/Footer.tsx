@@ -9,7 +9,20 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDocs }) => {
     <footer className="w-full py-16 bg-white border-t border-[#ccc3d8]/20">
       <div className="max-w-[1280px] mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
         <div className="space-y-3">
-          <div className="text-xl font-extrabold text-[#630ed4]">SocialSpark AI</div>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#630ed4] via-[#8127cf] to-[#d946ef] p-0.5 shadow-sm shadow-[#630ed4]/20 flex items-center justify-center">
+              <div className="w-full h-full bg-[#1b0042] rounded-[10px] flex items-center justify-center">
+                <span className="material-symbols-outlined text-white text-[16px] fill-1">bolt</span>
+              </div>
+            </div>
+            <div className="flex items-baseline tracking-tight">
+              <span className="font-extrabold text-[19px] text-[#191c1e]">Social</span>
+              <span className="font-extrabold text-[19px] bg-gradient-to-r from-[#630ed4] to-[#c026d3] bg-clip-text text-transparent">Spark</span>
+              <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider bg-[#630ed4]/10 text-[#630ed4] rounded-md border border-[#630ed4]/20">
+                AI
+              </span>
+            </div>
+          </div>
           <p className="text-[#4a4455] text-sm">
             Empowering creators with AI-driven social media mastery.
           </p>

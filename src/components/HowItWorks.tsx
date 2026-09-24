@@ -30,9 +30,9 @@ export const HowItWorks: React.FC = () => {
             <div className="w-20 h-20 primary-gradient rounded-full flex items-center justify-center text-white font-bold mb-4 shadow-xl border-4 border-white">
               <span className="material-symbols-outlined text-[40px] fill-1">bolt</span>
             </div>
-            <h3 className="text-[22px] font-bold text-[#191c1e] mb-2">2. Gemini Generates</h3>
+            <h3 className="text-[22px] font-bold text-[#191c1e] mb-2">2. AI Generates</h3>
             <p className="text-[#4a4455] text-sm leading-relaxed">
-              Our Google Gemini-powered engine creates a week's worth of content in less than 30 seconds.
+              Our advanced AI engine creates a week's worth of content in less than 30 seconds.
             </p>
           </div>
 

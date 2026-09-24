@@ -58,7 +58,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ onComplete }) => {
             ></div>
           </div>
           <p className="text-xs text-[#4a4455] font-medium tracking-wider uppercase pt-1">
-            Gemini AI Engine Active • {current.percent}
+            AI Content Engine Active • {current.percent}
           </p>
         </div>
       </div>

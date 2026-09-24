@@ -139,7 +139,7 @@ export default function App() {
                   Generate Your Weekly Social Media Plan
                 </h1>
                 <p className="text-[#4a4455] max-w-2xl mx-auto text-base">
-                  Fill in your brand details and let Gemini AI create a complete, multi-platform content strategy in seconds.
+                  Fill in your brand details and let our AI engine create a complete, multi-platform content strategy in seconds.
                 </p>
               </header>
             )}

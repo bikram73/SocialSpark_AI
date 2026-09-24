@@ -14,7 +14,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onGenerateNow, onViewD
             AI-Powered Social Media Content Creation Made Effortless
           </h1>
           <p className="text-[#4a4455] text-[16px] leading-[1.6] max-w-xl">
-            Generate captions, hashtags, content ideas, and a full 7-day posting calendar in seconds using Google Gemini AI.
+            Generate captions, hashtags, content ideas, and a full 7-day posting calendar in seconds using advanced AI.
           </p>
           <div className="flex flex-wrap gap-4 pt-2">
             <button

@@ -147,7 +147,7 @@ export const CalendarPreviewModal: React.FC<CalendarPreviewModalProps> = ({ isOp
           {/* Floating AI badge */}
           <div className="absolute -bottom-4 right-8 bg-white/90 backdrop-blur-md px-5 py-2.5 rounded-2xl shadow-lg border border-white flex items-center gap-2">
             <span className="material-symbols-outlined text-[#7c3aed] fill-1 text-xl">auto_awesome</span>
-            <span className="text-xs font-bold text-[#191c1e]">Gemini AI Calendar Active</span>
+            <span className="text-xs font-bold text-[#191c1e]">AI Smart Calendar Active</span>
           </div>
         </div>
 

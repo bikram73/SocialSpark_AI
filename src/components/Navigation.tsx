@@ -63,6 +63,18 @@ export const Navigation: React.FC<NavigationProps> = ({
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-8 text-[16px] font-medium text-[#4a4455]">
           <button
+            onClick={() => {
+              setActiveTab('landing');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className={`flex items-center gap-1.5 transition-colors hover:scale-105 duration-200 cursor-pointer ${
+              activeTab === 'landing' ? 'text-[#630ed4] font-bold' : 'hover:text-[#630ed4]'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[19px]">home</span>
+            <span>Home</span>
+          </button>
+          <button
             onClick={() => handleNavClick('features')}
             className="hover:text-[#630ed4] transition-colors hover:scale-105 duration-200 cursor-pointer"
           >
@@ -117,6 +129,19 @@ export const Navigation: React.FC<NavigationProps> = ({
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white/95 backdrop-blur-xl border-b border-[#ccc3d8]/40 px-6 py-4 flex flex-col gap-4 text-[#191c1e] font-medium shadow-xl">
+          <button
+            onClick={() => {
+              setActiveTab('landing');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              setMobileMenuOpen(false);
+            }}
+            className={`flex items-center gap-2 text-left py-2 border-b border-gray-100 ${
+              activeTab === 'landing' ? 'text-[#630ed4] font-bold' : 'hover:text-[#630ed4]'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[20px]">home</span>
+            <span>Home</span>
+          </button>
           <button
             onClick={() => handleNavClick('features')}
             className="text-left py-2 hover:text-[#630ed4] border-b border-gray-100"

@@ -2,9 +2,11 @@ import React from 'react';
 
 interface FooterProps {
   onOpenDocs?: () => void;
+  onOpenGenerator?: () => void;
+  onNavigateToSection?: (sectionId: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenDocs }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenDocs, onOpenGenerator, onNavigateToSection }) => {
   return (
     <footer className="w-full py-16 bg-white border-t border-[#ccc3d8]/20">
       <div className="max-w-[1280px] mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -30,16 +32,56 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDocs }) => {
 
         <div className="flex flex-col gap-2">
           <h4 className="font-bold text-[#191c1e] mb-2 text-base">Quick Links</h4>
-          <a href="#features" className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline">
+          <a
+            href="#features"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onNavigateToSection) {
+                onNavigateToSection('features');
+              } else {
+                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline cursor-pointer"
+          >
             Features
           </a>
-          <a href="#benefits" className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline">
+          <a
+            href="#benefits"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onNavigateToSection) {
+                onNavigateToSection('benefits');
+              } else {
+                document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline cursor-pointer"
+          >
             Creator Benefits
           </a>
-          <a href="#how-it-works" className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline">
+          <a
+            href="#how-it-works"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onNavigateToSection) {
+                onNavigateToSection('how-it-works');
+              } else {
+                document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline cursor-pointer"
+          >
             How It Works
           </a>
-          <a href="#generator-form" className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline">
+          <a
+            href="#generator-form"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenGenerator?.();
+            }}
+            className="text-[#4a4455] hover:text-[#630ed4] transition-colors text-sm hover:underline cursor-pointer font-medium"
+          >
             AI Content Planner
           </a>
         </div>

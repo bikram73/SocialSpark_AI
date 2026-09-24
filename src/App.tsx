@@ -173,7 +173,27 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <Footer onOpenDocs={() => setIsDocsOpen(true)} />
+      <Footer
+        onOpenDocs={() => setIsDocsOpen(true)}
+        onOpenGenerator={() => {
+          setActiveTab('generator');
+          setIsGenerated(false);
+          setIsGenerating(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onNavigateToSection={(sectionId) => {
+          if (activeTab !== 'landing') {
+            setActiveTab('landing');
+            setTimeout(() => {
+              const el = document.getElementById(sectionId);
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+          } else {
+            const el = document.getElementById(sectionId);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }
+        }}
+      />
 
       {/* 3D Calendar View Modal */}
       <CalendarPreviewModal

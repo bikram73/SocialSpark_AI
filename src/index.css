@@ -90,3 +90,21 @@
   animation: shimmer 1.5s infinite;
 }
 
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  header, footer, nav, .print\:hidden {
+    display: none !important;
+  }
+  .glass, .glass-card, .bg-white {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    box-shadow: none !important;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+}
+

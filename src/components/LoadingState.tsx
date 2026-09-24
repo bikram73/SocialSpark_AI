@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 interface LoadingStateProps {
   onComplete: () => void;
+  isReady?: boolean;
 }
 
-export const LoadingState: React.FC<LoadingStateProps> = ({ onComplete }) => {
+export const LoadingState: React.FC<LoadingStateProps> = ({ onComplete, isReady = true }) => {
   const [stepIndex, setStepIndex] = useState(0);
+  const [progressDone, setProgressDone] = useState(false);
 
   const steps = [
     { text: 'Analyzing brand brief...', percent: '25%' },
@@ -22,16 +24,23 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ onComplete }) => {
           return prev + 1;
         } else {
           clearInterval(timer);
-          setTimeout(() => {
-            onComplete();
-          }, 600);
+          setProgressDone(true);
           return prev;
         }
       });
-    }, 900);
+    }, 600);
 
     return () => clearInterval(timer);
-  }, [onComplete, steps.length]);
+  }, [steps.length]);
+
+  useEffect(() => {
+    if (progressDone && isReady) {
+      const finishTimeout = setTimeout(() => {
+        onComplete();
+      }, 400);
+      return () => clearTimeout(finishTimeout);
+    }
+  }, [progressDone, isReady, onComplete]);
 
   const current = steps[stepIndex];
 

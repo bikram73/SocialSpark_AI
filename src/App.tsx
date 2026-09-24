@@ -24,6 +24,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('landing');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
+  const [dataReady, setDataReady] = useState(false);
   const [isDemoOpen, setIsDemoOpen] = useState(false);
   const [isDocsOpen, setIsDocsOpen] = useState(false);
   const [generatedData, setGeneratedData] = useState<GeneratedResult | null>(null);
@@ -49,6 +50,7 @@ export default function App() {
   const handleFormSubmit = async () => {
     setIsGenerating(true);
     setIsGenerated(false);
+    setDataReady(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     try {
@@ -57,6 +59,8 @@ export default function App() {
     } catch (error) {
       console.error('Generation failed, using default plan:', error);
       setGeneratedData(null);
+    } finally {
+      setDataReady(true);
     }
   };
 
@@ -157,7 +161,7 @@ export default function App() {
 
             {/* Step 2: Loading State */}
             {isGenerating && (
-              <LoadingState onComplete={handleGenerationComplete} />
+              <LoadingState onComplete={handleGenerationComplete} isReady={dataReady} />
             )}
 
             {/* Step 3: Result Section */}

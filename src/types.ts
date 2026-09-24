@@ -35,5 +35,7 @@ export interface GeneratedResult {
   pillars: string[];
   tips: string[];
   calendar: DayPlan[];
+  isFallback?: boolean;
+  source?: 'ai' | 'fallback';
 }
 

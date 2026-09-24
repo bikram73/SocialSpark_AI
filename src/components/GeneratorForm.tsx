@@ -190,24 +190,38 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formState.brandName.trim() || formState.brandName.length < 2 || formState.brandName.length > 50) {
-      setValidationError('Brand Name must be between 2 and 50 characters.');
+    const cleanBrand = formState.brandName.trim();
+    if (!cleanBrand || cleanBrand.length < 2 || cleanBrand.length > 50) {
+      setValidationError('Brand Name is required and must be between 2 and 50 characters.');
       return;
     }
 
-    if (!formState.businessCategory.trim()) {
-      setValidationError('Please specify a Business Category / Industry.');
+    const cleanCategory = formState.businessCategory.trim();
+    if (!cleanCategory || cleanCategory.length < 2 || cleanCategory.length > 100) {
+      setValidationError('Please specify a Business Category / Industry (2-100 characters).');
       return;
     }
 
-    if (!formState.targetAudience.trim()) {
-      setValidationError('Please specify your Target Audience.');
+    const cleanAudience = formState.targetAudience.trim();
+    if (!cleanAudience || cleanAudience.length < 2 || cleanAudience.length > 150) {
+      setValidationError('Please specify your Target Audience (2-150 characters).');
+      return;
+    }
+
+    const cleanVoice = formState.brandVoice.trim();
+    if (!cleanVoice) {
+      setValidationError('Please select a Brand Voice.');
       return;
     }
 
     const hasPlatformSelected = Object.values(formState.platforms).some(Boolean);
     if (!hasPlatformSelected) {
       setValidationError('Please select at least one social media platform.');
+      return;
+    }
+
+    if (formState.additionalInstructions && formState.additionalInstructions.length > 500) {
+      setValidationError('Additional Instructions cannot exceed 500 characters.');
       return;
     }
 
@@ -447,9 +461,14 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
 
           {/* Row 5: Additional Instructions */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#4a4455] block">
-              Additional Instructions (Optional, max 500 chars)
-            </label>
+            <div className="flex justify-between items-center">
+              <label className="text-sm font-semibold text-[#4a4455] block">
+                Additional Instructions (Optional, max 500 chars)
+              </label>
+              <span className={`text-xs ${formState.additionalInstructions.length >= 480 ? 'text-[#ba1a1a] font-bold' : 'text-[#4a4455]'}`}>
+                {formState.additionalInstructions.length} / 500
+              </span>
+            </div>
             <textarea
               name="additionalInstructions"
               rows={3}

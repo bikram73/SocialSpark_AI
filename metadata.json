@@ -1,0 +1,6 @@
+{
+  "name": "SocialSpark AI",
+  "description": "AI-Powered Social Media Content Creation Made Effortless",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

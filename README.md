@@ -9,7 +9,6 @@
 [![Google Gemini API](https://img.shields.io/badge/Google%20Gemini%20API-3.6%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
 [![Netlify Status](https://img.shields.io/badge/Live_Demo-social--spark--ai.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://social-spark-ai.netlify.app/)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-bikram73%2FSocialSpark__AI-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bikram73/SocialSpark_AI)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
 
 <p align="center">
   <strong>Transform your raw brand brief into an actionable 7-day multi-platform social media strategy in seconds.</strong><br>

@@ -61,7 +61,7 @@ export const Navigation: React.FC<NavigationProps> = ({
         </button>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center space-x-8 text-[16px] font-medium text-[#4a4455]">
+        <nav className="hidden md:flex items-center space-x-6 text-[15px] font-medium text-[#4a4455]">
           <button
             onClick={() => {
               setActiveTab('landing');
@@ -75,22 +75,34 @@ export const Navigation: React.FC<NavigationProps> = ({
             <span>Home</span>
           </button>
           <button
-            onClick={() => handleNavClick('features')}
+            onClick={() => handleNavClick('industry-showcase')}
             className="hover:text-[#630ed4] transition-colors hover:scale-105 duration-200 cursor-pointer"
           >
-            Features
+            Samples
           </button>
           <button
-            onClick={() => handleNavClick('how-it-works')}
+            onClick={() => handleNavClick('platform-deep-dive')}
             className="hover:text-[#630ed4] transition-colors hover:scale-105 duration-200 cursor-pointer"
           >
-            How It Works
+            Algorithms
           </button>
           <button
-            onClick={() => handleNavClick('benefits')}
+            onClick={() => handleNavClick('roi-calculator')}
             className="hover:text-[#630ed4] transition-colors hover:scale-105 duration-200 cursor-pointer"
           >
-            Benefits
+            ROI Calculator
+          </button>
+          <button
+            onClick={() => handleNavClick('comparison')}
+            className="hover:text-[#630ed4] transition-colors hover:scale-105 duration-200 cursor-pointer"
+          >
+            Comparison
+          </button>
+          <button
+            onClick={() => handleNavClick('faq')}
+            className="hover:text-[#630ed4] transition-colors hover:scale-105 duration-200 cursor-pointer"
+          >
+            FAQ
           </button>
           <button
             onClick={() => {
@@ -100,7 +112,7 @@ export const Navigation: React.FC<NavigationProps> = ({
               activeTab === 'demo' ? 'text-[#630ed4] font-bold border-b-2 border-[#630ed4] pb-0.5' : 'hover:text-[#630ed4]'
             }`}
           >
-            3D Calendar View
+            3D Calendar
           </button>
         </nav>
 
@@ -143,22 +155,40 @@ export const Navigation: React.FC<NavigationProps> = ({
             <span>Home</span>
           </button>
           <button
+            onClick={() => handleNavClick('industry-showcase')}
+            className="text-left py-2 hover:text-[#630ed4] border-b border-gray-100"
+          >
+            Live Strategy Samples
+          </button>
+          <button
+            onClick={() => handleNavClick('platform-deep-dive')}
+            className="text-left py-2 hover:text-[#630ed4] border-b border-gray-100"
+          >
+            Platform Algorithms
+          </button>
+          <button
             onClick={() => handleNavClick('features')}
             className="text-left py-2 hover:text-[#630ed4] border-b border-gray-100"
           >
             Features
           </button>
           <button
-            onClick={() => handleNavClick('how-it-works')}
+            onClick={() => handleNavClick('roi-calculator')}
             className="text-left py-2 hover:text-[#630ed4] border-b border-gray-100"
           >
-            How It Works
+            ROI Calculator
           </button>
           <button
-            onClick={() => handleNavClick('benefits')}
+            onClick={() => handleNavClick('comparison')}
             className="text-left py-2 hover:text-[#630ed4] border-b border-gray-100"
           >
-            Benefits
+            Agency Comparison
+          </button>
+          <button
+            onClick={() => handleNavClick('faq')}
+            className="text-left py-2 hover:text-[#630ed4] border-b border-gray-100"
+          >
+            FAQ
           </button>
           <button
             onClick={() => {

@@ -9,8 +9,14 @@ import { Navigation } from './components/Navigation';
 import { LandingHero } from './components/LandingHero';
 import { TrustedBrands } from './components/TrustedBrands';
 import { FeaturesSection } from './components/FeaturesSection';
+import { IndustryShowcase } from './components/IndustryShowcase';
+import { PlatformDeepDive } from './components/PlatformDeepDive';
 import { HowItWorks } from './components/HowItWorks';
+import { RoiCalculator } from './components/RoiCalculator';
 import { BenefitsSection } from './components/BenefitsSection';
+import { ComparisonTable } from './components/ComparisonTable';
+import { TestimonialsSection } from './components/TestimonialsSection';
+import { FaqSection } from './components/FaqSection';
 import { CtaBanner } from './components/CtaBanner';
 import { Footer } from './components/Footer';
 import { GeneratorForm } from './components/GeneratorForm';
@@ -112,10 +118,37 @@ export default function App() {
 
             <TrustedBrands />
 
+            {/* Interactive Live Industry Strategy Lab */}
+            <IndustryShowcase
+              onSelectPreset={(presetData) => {
+                setFormState(presetData);
+                setActiveTab('generator');
+                setIsGenerated(false);
+                setIsGenerating(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+
+            {/* Core Features */}
             <FeaturesSection />
 
+            {/* Platform Algorithmic Architecture */}
+            <PlatformDeepDive />
+
+            {/* 3-Step Success Path */}
             <HowItWorks />
 
+            {/* Dynamic Time & Cost Savings ROI Calculator */}
+            <RoiCalculator
+              onStartCalculating={() => {
+                setActiveTab('generator');
+                setIsGenerated(false);
+                setIsGenerating(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+
+            {/* Strategic Benefits */}
             <BenefitsSection
               onGetStarted={() => {
                 setActiveTab('generator');
@@ -125,6 +158,23 @@ export default function App() {
               }}
             />
 
+            {/* In-Depth Competitor & Agency Comparison Table */}
+            <ComparisonTable
+              onStartNow={() => {
+                setActiveTab('generator');
+                setIsGenerated(false);
+                setIsGenerating(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+
+            {/* Real Customer Case Studies & Metrics */}
+            <TestimonialsSection />
+
+            {/* Comprehensive Interactive FAQ Accordion */}
+            <FaqSection />
+
+            {/* Conversion CTA Banner */}
             <CtaBanner
               onStartGenerating={() => {
                 setActiveTab('generator');

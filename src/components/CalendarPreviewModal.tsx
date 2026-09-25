@@ -450,7 +450,6 @@ export const CalendarPreviewModal: React.FC<CalendarPreviewModalProps> = ({
   const [monthSprintFilter, setMonthSprintFilter] = useState<'all' | 'w1' | 'w2' | 'w3' | 'w4'>('all');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [viewDensity, setViewDensity] = useState<'comfortable' | 'compact'>('comfortable');
-  const [isInsightsOpen, setIsInsightsOpen] = useState(false);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -746,110 +745,6 @@ export const CalendarPreviewModal: React.FC<CalendarPreviewModalProps> = ({
               <span className="material-symbols-outlined text-base text-[#630ed4]">copy_all</span>
               <span className="text-xs font-bold hidden md:inline">Copy All</span>
             </button>
-
-            {/* Smart Notification / AI Schedule Intelligence */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setIsInsightsOpen((prev) => !prev)}
-                title="AI Schedule Intelligence & Analytics"
-                className={`w-9 h-9 rounded-xl backdrop-blur-md flex items-center justify-center shadow-sm border transition-colors cursor-pointer relative active:scale-95 ${
-                  isInsightsOpen
-                    ? 'bg-[#630ed4] text-white border-[#630ed4]'
-                    : 'bg-white/90 hover:bg-white border-white text-[#4a4455] hover:text-[#7c3aed]'
-                }`}
-              >
-                <span className="material-symbols-outlined text-lg">notifications</span>
-                {!isInsightsOpen && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#ec4899] animate-pulse"></span>
-                )}
-              </button>
-
-              {/* AI Schedule Intelligence Popover */}
-              {isInsightsOpen && (
-                <>
-                  <div
-                    className="fixed inset-0 z-30"
-                    onClick={() => setIsInsightsOpen(false)}
-                  />
-                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white p-5 z-40 animate-fade-in text-[#191c1e]">
-                    <div className="flex items-center justify-between pb-3 border-b border-[#ccc3d8]/40 mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#630ed4] text-lg">insights</span>
-                        <h4 className="font-extrabold text-sm text-[#191c1e]">
-                          AI Schedule Intelligence
-                        </h4>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setIsInsightsOpen(false)}
-                        className="text-[#79747e] hover:text-[#191c1e] p-1 rounded-lg hover:bg-[#f2f4f6] cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-sm">close</span>
-                      </button>
-                    </div>
-
-                    <div className="space-y-2.5 text-xs">
-                      <div className="flex items-center justify-between bg-[#f7f9fb] p-2.5 rounded-xl border border-[#ccc3d8]/40">
-                        <span className="font-semibold text-[#4a4455]">Schedule Health:</span>
-                        <span className="font-bold text-[#146c2e] bg-[#e8f5e9] px-2 py-0.5 rounded-md flex items-center gap-1">
-                          <span className="material-symbols-outlined text-xs">verified</span> 100% Ready
-                        </span>
-                      </div>
-
-                      <div className="bg-[#f7f9fb] p-2.5 rounded-xl border border-[#ccc3d8]/40">
-                        <span className="font-semibold text-[#4a4455] block mb-1">
-                          Peak Traffic Windows:
-                        </span>
-                        <div className="flex flex-wrap gap-1.5 text-[11px]">
-                          <span className="bg-white px-2 py-0.5 rounded border border-[#ccc3d8]/40 text-[#630ed4] font-bold">
-                            Morning: 08:45 – 11:30 AM
-                          </span>
-                          <span className="bg-white px-2 py-0.5 rounded border border-[#ccc3d8]/40 text-[#630ed4] font-bold">
-                            Afternoon: 01:15 – 04:30 PM
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="bg-[#f7f9fb] p-2.5 rounded-xl border border-[#ccc3d8]/40">
-                        <span className="font-semibold text-[#4a4455] block mb-1">
-                          Selected Timeframe Scope:
-                        </span>
-                        <p className="text-[11px] text-[#4a4455]">
-                          {filteredPosts.length} posts active across {platformsList.length - 1} platforms.
-                          All copy adheres to character limits and algorithmic hashtag constraints.
-                        </p>
-                      </div>
-
-                      <div className="pt-2 flex flex-col gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleCopyAllCaptions();
-                            setIsInsightsOpen(false);
-                          }}
-                          className="w-full py-2 bg-[#630ed4] hover:bg-[#520cb3] text-white rounded-xl font-bold flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm"
-                        >
-                          <span className="material-symbols-outlined text-sm">copy_all</span>
-                          Copy All {filteredPosts.length} Captions
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleExportJSON();
-                            setIsInsightsOpen(false);
-                          }}
-                          className="w-full py-2 bg-[#f2f4f6] hover:bg-[#eaddff] text-[#191c1e] rounded-xl font-bold flex items-center justify-center gap-2 cursor-pointer transition-all border border-[#ccc3d8]/40"
-                        >
-                          <span className="material-symbols-outlined text-sm">download</span>
-                          Export Schedule (.JSON)
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
           </div>
         </div>
 

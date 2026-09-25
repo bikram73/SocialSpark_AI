@@ -203,6 +203,8 @@ export default function App() {
       <CalendarPreviewModal
         isOpen={isDemoOpen}
         onClose={() => setIsDemoOpen(false)}
+        generatedCalendar={generatedData?.calendar}
+        brandName={formState.brandName}
       />
 
       {/* Documentation Modal */}

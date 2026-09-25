@@ -1,11 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { DayPlan } from '../types';
+import { DayPlan, FormState } from '../types';
 
 interface CalendarPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   generatedCalendar?: DayPlan[];
   brandName?: string;
+  formState?: FormState;
+  strategy?: string;
+  pillars?: string[];
 }
 
 export interface CalendarPostItem {
@@ -440,6 +443,9 @@ export const CalendarPreviewModal: React.FC<CalendarPreviewModalProps> = ({
   onClose,
   generatedCalendar,
   brandName,
+  formState,
+  strategy,
+  pillars,
 }) => {
   const [selectedDay, setSelectedDay] = useState<string>('All');
   const [selectedPlatform, setSelectedPlatform] = useState<string>('All');
@@ -450,6 +456,14 @@ export const CalendarPreviewModal: React.FC<CalendarPreviewModalProps> = ({
   const [monthSprintFilter, setMonthSprintFilter] = useState<'all' | 'w1' | 'w2' | 'w3' | 'w4'>('all');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [viewDensity, setViewDensity] = useState<'comfortable' | 'compact'>('comfortable');
+  const [showContextDetails, setShowContextDetails] = useState<boolean>(true);
+
+  const effectiveBrandName = brandName || formState?.brandName || 'FitLife';
+  const effectiveCategory = formState?.businessCategory || 'Fitness & Wellness';
+  const effectiveAudience = formState?.targetAudience || 'College Students & Young Professionals';
+  const effectiveVoice = formState?.brandVoice || 'Friendly and Motivational';
+  const effectiveThemes = formState?.contentThemes || 'Quick 15-Min Workouts, Healthy Meal Prep, Mindset Motivation';
+  const effectiveGoal = formState?.primaryGoal || 'Increase Community Engagement & Organic Followers';
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -750,6 +764,104 @@ export const CalendarPreviewModal: React.FC<CalendarPreviewModalProps> = ({
 
         {/* Child Div 4: 3D Glass Mockup Board */}
         <div className="relative bg-white/50 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/70 shadow-xl min-h-[460px] flex flex-col justify-between overflow-y-auto max-h-[64vh]">
+          {/* Strategic Campaign Context Banner */}
+          <div className="mb-5 bg-gradient-to-r from-white/95 via-white/85 to-[#eaddff]/60 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white shadow-sm">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-[#ccc3d8]/30">
+              <div className="flex items-start sm:items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#630ed4] to-[#c026d3] text-white flex items-center justify-center shrink-0 shadow-md">
+                  <span className="material-symbols-outlined text-xl">campaign</span>
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider bg-[#630ed4] text-white px-2 py-0.5 rounded-md">
+                      {timeframe === 'Current Week'
+                        ? 'Current Week Strategy Context'
+                        : timeframe === 'Next Week'
+                        ? 'Next Week Authority Context'
+                        : 'Full Month Campaign Context'}
+                    </span>
+                    <span className="text-xs font-bold text-[#191c1e]">
+                      {effectiveBrandName} • {effectiveCategory}
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-extrabold text-[#191c1e] mt-0.5">
+                    {timeframe === 'Current Week'
+                      ? `Core Goal: ${effectiveGoal}`
+                      : timeframe === 'Next Week'
+                      ? `Sprint 2 Goal: Authority & Conversions (${effectiveGoal})`
+                      : `30-Day Growth Roadmap (${effectiveGoal})`}
+                  </h3>
+                </div>
+              </div>
+
+              {/* Toggle Context Deep Dive */}
+              <button
+                type="button"
+                onClick={() => setShowContextDetails((prev) => !prev)}
+                className="self-start lg:self-auto text-xs font-bold text-[#630ed4] hover:text-[#520cb3] bg-white/90 hover:bg-white px-3 py-1.5 rounded-lg border border-[#ccc3d8]/40 shadow-xs flex items-center gap-1.5 cursor-pointer transition-all shrink-0 active:scale-95"
+              >
+                <span className="material-symbols-outlined text-sm">
+                  {showContextDetails ? 'expand_less' : 'psychology'}
+                </span>
+                <span>{showContextDetails ? 'Hide Rationale' : 'Why This Was Generated'}</span>
+              </button>
+            </div>
+
+            {/* Campaign Parameters Strip */}
+            <div className="pt-3 flex flex-wrap items-center gap-2 text-xs">
+              <div className="flex items-center gap-1.5 bg-white/80 px-2.5 py-1 rounded-lg border border-[#ccc3d8]/30 text-[#4a4455]">
+                <span className="material-symbols-outlined text-xs text-[#630ed4]">group</span>
+                <span className="font-semibold text-[#191c1e]">Target Audience:</span>
+                <span className="text-[#4a4455] truncate max-w-[220px]">{effectiveAudience}</span>
+              </div>
+
+              <div className="flex items-center gap-1.5 bg-white/80 px-2.5 py-1 rounded-lg border border-[#ccc3d8]/30 text-[#4a4455]">
+                <span className="material-symbols-outlined text-xs text-[#630ed4]">record_voice_over</span>
+                <span className="font-semibold text-[#191c1e]">Brand Voice:</span>
+                <span className="text-[#4a4455]">{effectiveVoice}</span>
+              </div>
+
+              <div className="flex items-center gap-1.5 bg-white/80 px-2.5 py-1 rounded-lg border border-[#ccc3d8]/30 text-[#4a4455]">
+                <span className="material-symbols-outlined text-xs text-[#630ed4]">category</span>
+                <span className="font-semibold text-[#191c1e]">Themes:</span>
+                <span className="text-[#4a4455] truncate max-w-[240px]">{effectiveThemes}</span>
+              </div>
+            </div>
+
+            {/* Expandable Strategy Rationale & Generation Blueprint */}
+            {showContextDetails && (
+              <div className="mt-3 pt-3 border-t border-[#ccc3d8]/30 text-xs text-[#191c1e] space-y-2 animate-fade-in">
+                <div className="p-3 rounded-xl bg-white/95 border border-[#ccc3d8]/40 leading-relaxed shadow-xs">
+                  <p className="font-bold text-[#630ed4] mb-1 flex items-center gap-1">
+                    <span className="material-symbols-outlined text-sm">lightbulb</span>
+                    Strategic Blueprint & Generation Rationale:
+                  </p>
+                  <p className="text-[#4a4455]">
+                    {strategy
+                      ? strategy
+                      : `This schedule was generated specifically for ${effectiveBrandName} targeting ${effectiveAudience}. Rather than generic corporate copy, every post directly weaves your themes (${effectiveThemes}) into native platform formats. High-retention Reels hook mobile viewers, document carousels generate algorithmic dwell time, and actionable threads drive community bookmarking during verified peak traffic windows.`}
+                  </p>
+                </div>
+
+                {pillars && pillars.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 items-center pt-1">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#79747e] mr-1">
+                      Pillars:
+                    </span>
+                    {pillars.map((pill, i) => (
+                      <span
+                        key={i}
+                        className="px-2.5 py-0.5 rounded-full bg-[#630ed4]/10 text-[#630ed4] font-semibold text-[11px] border border-[#630ed4]/20"
+                      >
+                        {pill}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
           {/* Board Header Toolbar: Day Filters, Platform Filters, and Sprint switcher */}
           <div className="border-b border-white/60 pb-4 mb-4">
             {/* If Full Month Overview is active, show Sprint selector */}

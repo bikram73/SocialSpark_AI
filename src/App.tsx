@@ -205,6 +205,9 @@ export default function App() {
         onClose={() => setIsDemoOpen(false)}
         generatedCalendar={generatedData?.calendar}
         brandName={formState.brandName}
+        formState={formState}
+        strategy={generatedData?.strategy}
+        pillars={generatedData?.pillars}
       />
 
       {/* Documentation Modal */}
